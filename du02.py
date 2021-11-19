@@ -17,10 +17,10 @@ with open("vstup.csv", encoding="utf-8") as csvinfile,\
 				#total = total + int(row[4])	# Delší forma zápisu, dělá to samé, co kratší
 		except ValueError:
 			pass	
-		if cisloradky == 0:
+		if sedmdni == 0:
 			sedmiprum=sedmiprum/7
-			row[5]=sedmiprum
-			str(row[5])
+			formatted_string="{:.4f}".format(sedmiprum)
+			row[5]=float(formatted_string)
 			print(row[0:6])
 			sedmiprum=0
 		
