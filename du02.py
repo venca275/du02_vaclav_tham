@@ -18,17 +18,23 @@ with open("vstup.csv", encoding="utf-8") as csvinfile,\
 	min=60000
 	# Cyklus, který projede všechny řádky v souboru
 	for row in reader:		# Čteme jednotlivé řádky z `reader`u, v `row` máme seznam buněk daného řádku
+		
+		# Detekce chyb záporný nebo nulový průtok
+		if float(row[5]) <= 0:
+			print("Průtok je buďto záporný nebo nulový")
+			print(row)
 		# Zjišťujeme zda je cisloradky delitelné 7 a skončí dělení nulou, poté přiřadíme aktualní řádku do proměnné
 		if cisloradky % 7 == 0:
 			prvnidensedmice = row
 		
-		# Přiřadí do sedmidenního průměru, denní prumer z aktualni řádky
+		# Přičte do sedmidenního průměru, denní prumer z aktualni řádky
 		# také připočítá zbytek + 1, kvůli tomu abychom zajistili správný výpočet pokud by počet řádek nebyl dělitelný 7
 		try:
 				sedmiprum = sedmiprum + float(row[5])
 				zbytek = zbytek + 1		
 		except ValueError:
 			print("Na řádku je chybná hodnota")
+		
 		# Maximální denní průtok
 		if float(row[5]) > float(max):
 			maxprutok=row
@@ -37,46 +43,49 @@ with open("vstup.csv", encoding="utf-8") as csvinfile,\
 		if float(row[5]) < float(min):
 			minimalprutok=row
 			min = row[5]
-		# Přiřadí do prumrok, denni prumer z aktualni radky
+		
+		# Přičte do ročního průměru, denni prumer z aktualni radky
 		try:
 				prumrok = prumrok + float(row[5])		
 		except ValueError:
 			print("Na řádku je chybná hodnota")
 		
+		#  Zjístí, že jsme na posledním dni 7 tak vypočte průměr za týden přiřadí do první řádky sedmice, a následně zapíše
 		if cisloradky % 7 == 6:
 			sedmiprum= sedmiprum/7
 			sedmiprum ="{:.4f}".format(sedmiprum)
 			prvnidensedmice[5]= sedmiprum
 			writertyden.writerow(prvnidensedmice)
 			zbytek = 0
-			sedmiprum= float(sedmiprum)
 			sedmiprum=0
 		cisloradky= cisloradky + 1
 		
 		# Podmínky pro přirazení prvního dne roku do proměnné
+		# Podmínka pro první řádku
 		if reader.line_num == 1:
 			prvnidenroku = row
 			pocitanyrok = int(prvnidenroku[2])
 		aktualnirok = int(row[2])
+		# Podmínka pro zbytek řádek v programu
 		if pocitanyrok != aktualnirok:
 			prumrok = prumrok / pocetdnuvroce
 			prumrok ="{:.4f}".format(prumrok)
 			prvnidenroku[5] = prumrok
 			writerrok.writerow(prvnidenroku)
-			prumrok= float(prumrok)
 			prumrok=0
 			pocetdnuvroce=0
 			prvnidenroku=row
 			pocitanyrok = int(prvnidenroku[2])
 		
 		pocetdnuvroce = pocetdnuvroce + 1
-	# Výpočet prumeru a vypsani, pokud celkový počet řádek není dělitelný 7
-	if cisloradky % 7 != 6:
+	
+	# Výpočet prumeru a vypsani, pokud celkový počet řádek není dělitelný 7(mimo cyklus jelikož se udělá pouze jednou na konci)
+	if cisloradky % 7 != 0:
 		sedmiprum = sedmiprum / zbytek
 		sedmiprum = "{:.4f}".format(sedmiprum)
 		prvnidensedmice[5] = sedmiprum
 		writertyden.writerow(prvnidensedmice)
-	# Zapsání posledního roku v tabulce po skončení cyklu
+	# Zapsání posledního roku v tabulce po skončení cyklu(mimo cyklus jelikož se udělá pouze jednou na konci)
 	prumrok = prumrok / pocetdnuvroce
 	prumrok ="{:.4f}".format(prumrok)
 	prvnidenroku[5] = prumrok
