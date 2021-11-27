@@ -58,11 +58,12 @@ try:
 			aktualnirok = int(row[2])
 			# Podmínka pro zbytek řádek v programu
 			if pocitanyrok != aktualnirok:
+				prumrok = prumrok - denniprum
 				prumrok = prumrok / pocetdnuvroce
 				prumrok ="{:.4f}".format(prumrok)
 				prvnidenroku[5] = prumrok
 				writerrok.writerow(prvnidenroku)
-				prumrok=0
+				prumrok= float(prumrok) + denniprum
 				pocetdnuvroce=0
 				prvnidenroku=row
 				pocitanyrok = int(prvnidenroku[2])
